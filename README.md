@@ -23,7 +23,7 @@
 ```yaml
 {
   "mcpServers": {
-    "mcp-aktools": {
+    "aktools": {
       "command": "uvx",
       "args": ["mcp-aktools"],
       "env": {
@@ -44,7 +44,7 @@
 ```yaml
 {
   "mcpServers": {
-    "mcp-aktools": {
+    "aktools": {
       "url": "https://server.smithery.ai/@aahl/mcp-aktools/mcp" # Streamable HTTP
     }
   }
@@ -61,7 +61,7 @@ docker-compose up -d
 ```yaml
 {
   "mcpServers": {
-    "mcp-aktools": {
+    "aktools": {
       "url": "http://0.0.0.0:8808/mcp" # Streamable HTTP
     }
   }
