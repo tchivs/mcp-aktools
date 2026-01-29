@@ -12,7 +12,7 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app
 COPY . .
 
-RUN apt update && apt install -y --no-install-recommends netcat-openbsd
+RUN apt update && apt install -y --no-install-recommends git netcat-openbsd
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
