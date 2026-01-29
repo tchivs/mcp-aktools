@@ -1,11 +1,12 @@
 services:
-  mcp-aktools:
-    container_name: mcp-aktools
-    image: ghcr.nju.edu.cn/aahl/mcp-aktools
+  aktools-pro:
+    container_name: aktools-pro
+    image: ghcr.io/tchivs/aktools-pro
     ports:
       - 8808:80
     environment:
       TZ: Asia/Shanghai
       TRANSPORT: ${TRANSPORT:-http} # http/sse
-      UV_INDEX_URL: https://mirrors.ustc.edu.cn/pypi/simple
+      # OKX_BASE_URL: https://okx.com
+      # BINANCE_BASE_URL: https://www.binance.com
     restart: always

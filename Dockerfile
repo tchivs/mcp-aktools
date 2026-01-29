@@ -1,6 +1,6 @@
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
-LABEL io.modelcontextprotocol.server.name="io.github.aahl/mcp-aktools"
+LABEL io.modelcontextprotocol.server.name="io.github.tchivs/aktools-pro"
 
 ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
