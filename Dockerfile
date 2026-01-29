@@ -2,17 +2,20 @@ FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 LABEL io.modelcontextprotocol.server.name="io.github.tchivs/aktools-pro"
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+
 ENV PYTHONUNBUFFERED=1 \
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     PATH="/app/.venv/bin:$PATH" \
     TRANSPORT=http \
-    PORT=80
+    PORT=80 \
+    SETUPTOOLS_SCM_PRETEND_VERSION=${SETUPTOOLS_SCM_PRETEND_VERSION}
 
 WORKDIR /app
 COPY . .
 
-RUN apt update && apt install -y --no-install-recommends git netcat-openbsd
+RUN apt update && apt install -y --no-install-recommends netcat-openbsd
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev
 
