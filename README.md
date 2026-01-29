@@ -1,19 +1,9 @@
-# 📈 AkTools MCP Server
+# 📈 AkTools Pro MCP Server
 
-<!-- mcp-name: io.github.aahl/mcp-aktools -->
-基于 [akshare](https://github.com/akfamily/akshare) 的 MCP (Model Context Protocol) 服务器，为 AI Agent 提供专业的金融数据查询、深度分析及实战交易技能。
+<!-- mcp-name: io.github.tchivs/aktools-pro -->
+基于 [akshare](https://github.com/akfamily/akshare) 的增强型 MCP (Model Context Protocol) 服务器。
 
-## 🌟 核心亮点
-
-- 🧠 **不仅是工具，更是技能**: 支持 MCP Prompts 和 Resources，内置金融分析 SOP。
-- 💹 **全市场覆盖**: A股、港股、美股、加密货币数据一站式获取。
-- 📊 **可视化增强**: 支持 ASCII 字符走势图，让 AI 的分析更直观。
-- 🛡️ **双层缓存**: 内存 + 磁盘双层缓存机制，极致响应速度，保护数据源。
-- 💼 **实战模拟**: 内置模拟持仓管理，支持 AI 自动跟踪盈亏。
-
----
-
-## 🚀 快速开始 (个人版: tchivs-aktools)
+## 🚀 快速开始 (aktools-pro)
 
 ### 方式 1: 自动安装 (推荐)
 
@@ -26,13 +16,13 @@ opencode mcp add
 ```
 按照提示进行操作：
 1. **Location**: 选择 `Global`
-2. **Name**: 输入 `my-aktools` (避免和官方版冲突)
+2. **Name**: 输入 `aktools-pro`
 3. **Type**: 选择 `Local`
-4. **Command**: 输入 `uvx --from git+https://github.com/tchivs/mcp-aktools.git tchivs-aktools`
+4. **Command**: 输入 `uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro`
 
 #### **Claude Code**
 ```bash
-claude mcp add my-aktools -- uvx --from git+https://github.com/tchivs/mcp-aktools.git tchivs-aktools
+claude mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
 ```
 
 #### **Cursor**

@@ -10,7 +10,7 @@ on:
       - .github/**
 
 env:
-  PYPI_PKG_NAME: tchivs-aktools
+  PYPI_PKG_NAME: aktools-pro
 
 jobs:
   build:
