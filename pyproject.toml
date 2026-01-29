@@ -1,6 +1,6 @@
 [project]
 name = "aktools-pro"
-version = "0.2.2"
+dynamic = ["version"]
 description = "MCP Server for stock and crypto"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -32,9 +32,12 @@ ignore = ["E501"]
 testpaths = ["tests"]
 python_files = "test_*.py"
 
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
 [tool.hatch.build.targets.wheel]
 packages = ["mcp_aktools"]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"

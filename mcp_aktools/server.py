@@ -1,3 +1,9 @@
+import importlib.metadata
 from fastmcp import FastMCP
 
-mcp = FastMCP(name="aktools-pro", version="0.2.2")
+try:
+    __version__ = importlib.metadata.version("aktools-pro")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "0.0.0-dev"
+
+mcp = FastMCP(name="aktools-pro", version=__version__)
