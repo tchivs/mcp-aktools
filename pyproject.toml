@@ -1,5 +1,5 @@
 [project]
-name = "mcp-aktools"
+name = "tchivs-aktools"
 version = "0.2.0"
 description = "MCP Server for stock and crypto"
 readme = "README.md"

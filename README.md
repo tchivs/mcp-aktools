@@ -13,11 +13,11 @@
 
 ---
 
-## 🚀 快速开始
+## 🚀 快速开始 (个人版: tchivs-aktools)
 
 ### 方式 1: 自动安装 (推荐)
 
-在你的 AI 终端中根据客户端类型执行：
+在你的 AI 终端中直接运行以下指令，从你的 GitHub Fork 版本安装：
 
 #### **OpenCode (Sisyphus)**
 直接运行交互式命令：
@@ -25,18 +25,24 @@
 opencode mcp add
 ```
 按照提示进行操作：
-1. **Location**: 选择 `Global` (推荐) 或 `Current project`
-2. **Name**: 输入 `aktools`
+1. **Location**: 选择 `Global`
+2. **Name**: 输入 `my-aktools` (避免和官方版冲突)
 3. **Type**: 选择 `Local`
-4. **Command**: 输入 `uvx mcp-aktools`
+4. **Command**: 输入 `uvx --from git+https://github.com/tchivs/mcp-aktools.git tchivs-aktools`
 
 #### **Claude Code**
 ```bash
-claude mcp add aktools -- uvx mcp-aktools
+claude mcp add my-aktools -- uvx --from git+https://github.com/tchivs/mcp-aktools.git tchivs-aktools
 ```
 
 #### **Cursor**
-[点击一键安装](https://cursor.com/zh/install-mcp?name=aktools&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3AtYWt0b29scyJdfQ%3D%3D)
+手动在 `mcpServers` 配置中添加：
+```json
+"my-aktools": {
+  "command": "uvx",
+  "args": ["--from", "git+https://github.com/tchivs/mcp-aktools.git", "tchivs-aktools"]
+}
+```
 
 ### 方式 2: 手动配置 (uvx)
 ```json
