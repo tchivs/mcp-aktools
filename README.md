@@ -174,9 +174,7 @@ uv run aktools-pro inspect
 ---
 
 <p align="center">
-  <a href="https://github.com/tchivs/mcp-aktools">
-    <img width="400" src="https://glama.ai/mcp/servers/@al-one/mcp-aktools/badge">
-  </a>
+    Built with ❤️ for the Quantitative Trading Community
 </p>
 
 [![FastMCP](https://img.shields.io/badge/Powered%20by-FastMCP-blue)](https://github.com/jlowin/fastmcp)
