@@ -65,14 +65,37 @@ claude mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktoo
 codex mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
 ```
 
-#### **Cursor**
-手动在 `mcpServers` 配置中添加：
+#### **Cursor / VS Code / Cherry Studio**
+- **Cursor**: 手动在 `mcpServers` 配置中添加以下 JSON，或 [点击一键安装](https://cursor.com/zh/install-mcp?name=aktools-pro&config=eyJjb21tYW5kIjoiaXZ4IiwiYXJncyI6WyItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL3RjaGl2cy9tY3AtYWt0b29scy5naXQiLCJha3Rvb2xzLXBybyJdfQ%3D%3D)
+- **VS Code**: [![Install MCP Server](https://img.shields.io/badge/VS_Code-+?label=Add+MCP+Server&color=0098FF)](https://insiders.vscode.dev/redirect?url=vscode:mcp/install%3F%7B%22name%22%3A%22aktools-pro%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--from%22%2C%22git+https://github.com/tchivs/mcp-aktools.git%22%2C%22aktools-pro%22%5D%7D)
+- **Cherry Studio**: [![Install MCP Server](https://img.shields.io/badge/Cherry_Studio-+?label=Add+MCP+Server&color=FF5F5F)](https://gitee.com/link?target=cherrystudio%3A%2F%2Fmcp%2Finstall%3Fservers%3DeyJtY3BTZXJ2ZXJzIjp7ImFrdG9vbHMtcHJvIjp7ImNvbW1hbmQiOiJ1dngiLCJhcmdzIjpbIi0tZnJvbSIsImdpdCtodHRwczovL2dpdGh1Yi5jb20vdGNoaXZzL21jcC1ha3Rvb2xzLmdpdCIsImFrdG9vbHMtcHJvIl19fX0%3D)
+
 ```json
 "aktools-pro": {
   "command": "uvx",
   "args": ["--from", "git+https://github.com/tchivs/mcp-aktools.git", "aktools-pro"]
 }
 ```
+
+### 方式 2: Docker
+```bash
+mkdir /opt/aktools-pro
+cd /opt/aktools-pro
+wget https://raw.githubusercontent.com/tchivs/mcp-aktools/main/docker-compose.yml
+docker-compose up -d
+```
+```json
+{
+  "mcpServers": {
+    "aktools-pro": {
+      "url": "http://localhost:8808/mcp"
+    }
+  }
+}
+```
+
+### 方式 3: Smithery (即将支持)
+> 敬请期待专属 AkTools Pro 的 Smithery 快速集成。
 
 ---
 
@@ -149,6 +172,12 @@ uv run aktools-pro inspect
 ```
 
 ---
+
+<p align="center">
+  <a href="https://github.com/tchivs/mcp-aktools">
+    <img width="400" src="https://glama.ai/mcp/servers/@al-one/mcp-aktools/badge">
+  </a>
+</p>
 
 [![FastMCP](https://img.shields.io/badge/Powered%20by-FastMCP-blue)](https://github.com/jlowin/fastmcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
