@@ -47,9 +47,13 @@ opencode mcp add
 3. **Type**: 选择 `Local`
 4. **Command**: 输入 `uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro`
 
-#### **Claude Code**
+#### **Claude Code / OpenAI Codex**
 ```bash
+# Claude Code
 claude mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
+
+# OpenAI Codex (或其他支持 CLI 安装的客户端)
+codex mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
 ```
 
 #### **Cursor**
