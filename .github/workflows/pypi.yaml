@@ -10,7 +10,7 @@ on:
       - .github/**
 
 env:
-  PYPI_PKG_NAME: mcp-aktools
+  PYPI_PKG_NAME: tchivs-aktools
 
 jobs:
   build:
