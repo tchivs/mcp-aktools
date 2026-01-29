@@ -1,6 +1,6 @@
 [project]
 name = "aktools-pro"
-version = "0.2.0"
+version = "0.2.1"
 description = "MCP Server for stock and crypto"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -31,6 +31,9 @@ ignore = ["E501"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["mcp_aktools"]
 
 [build-system]
 requires = ["hatchling"]
