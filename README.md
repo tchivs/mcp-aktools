@@ -84,15 +84,18 @@ cd /opt/aktools-pro
 wget https://raw.githubusercontent.com/tchivs/mcp-aktools/main/docker-compose.yml
 docker-compose up -d
 ```
-```json
-{
-  "mcpServers": {
-    "aktools-pro": {
-      "url": "http://localhost:8808/mcp"
-    }
-  }
-}
-```
+
+### ⚙️ 环境变量配置 (Optional)
+无论通过 `uvx` 还是 `Docker` 安装，均支持以下环境变量：
+
+| 变量名 | 说明 | 默认值 / 示例 |
+| :--- | :--- | :--- |
+| `OKX_BASE_URL` | OKX 代理地址 (避开网络限制) | `https://okx.com` |
+| `BINANCE_BASE_URL` | 币安代理地址 | `https://www.binance.com` |
+| `NEWSNOW_BASE_URL` | 财经资讯接口地址 | `https://newsnow.busiyi.world` |
+| `NEWSNOW_CHANNELS` | 资讯频道 (逗号分隔) | `wallstreetcn-quick,cls-telegraph,jin10` |
+| `PORT` | HTTP 模式下的监听端口 | `80` |
+| `TRANSPORT` | MCP 传输协议类型 | `stdio` (可选 `http`, `sse`) |
 
 ### 方式 3: Smithery (即将支持)
 > 敬请期待专属 AkTools Pro 的 Smithery 快速集成。
