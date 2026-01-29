@@ -14,6 +14,22 @@
 
 ---
 
+## 💎 AkTools Pro vs 原版区别 (Why Pro?)
+
+本项目 fork 自 [aahl/mcp-aktools](https://github.com/aahl/mcp-aktools)，并在其基础上进行了深度的工程化重构与功能增强。主要区别如下：
+
+| 维度 | AkTools (原版) | AkTools Pro (本版本) |
+| :--- | :--- | :--- |
+| **项目架构** | 单文件 (`__init__.py` > 900行) | **标准模块化包结构**，易于扩展和维护 |
+| **回测能力** | ❌ 无 | ✅ **内置 Backtesting 引擎**，支持 SMA/RSI/MACD 策略验证 |
+| **实战功能** | ❌ 无 | ✅ **模拟盘持仓管理** (`portfolio_add/view`)，实时跟踪胜率 |
+| **视觉增强** | ❌ 仅限纯文本/CSV | ✅ **ASCII 字符趋势图** (`draw_ascii_chart`)，分析更直观 |
+| **市场雷达** | ❌ 基础行情抓取 | ✅ **实时异动监控** (火箭发射/封板等) 与 **北向资金** 追踪 |
+| **Agent 支持** | 基础 Tool 调用 | ✅ **全功能技能引擎**：内置 Prompts、Resources 与 `AGENTS.md` SOP |
+| **工程质量** | 基础实现 | ✅ **严格类型提示**、Ruff 规范检查与自动缓存机制 |
+
+---
+
 ## 🚀 快速开始 (aktools-pro)
 
 ### 方式 1: 自动安装 (推荐)
