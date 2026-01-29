@@ -1,0 +1,26 @@
+# mcp-aktools AI Coding Rules
+
+## 🤖 Model Specific Instructions
+- **Codex/Copilot**: Focus on PEP 8, Type Hints, and strict return types. Use `ruff` patterns for code fixes.
+- **Claude Code**: Prioritize updating MCP `@mcp.tool` descriptions. Maintain CSV return formats.
+- **OpenCode/Sisyphus**: Follow the SOPs defined in `AGENTS.md`. Always classify tasks into `quick`, `ultrabrain`, or `visual-engineering`.
+
+## 🛠 Tech Stack
+- Framework: FastMCP (Python)
+- Data: akshare
+- Formatting: Ruff
+
+## 📏 Coding Standards
+- **Naming**: `snake_case` for everything except classes (`PascalCase`).
+- **Tool Definitions**:
+    - Every tool must have `title` and `description` in `@mcp.tool`.
+    - Parameters must use `pydantic.Field` with descriptions.
+- **Data Flow**:
+    - All data-fetching must use `ak_cache`.
+    - Returns must be `str` (usually CSV via `df.to_csv()`).
+- **Types**: Always include type hints for new functions. Use `pd.DataFrame | None` for data-related returns.
+
+## 🚫 Anti-Patterns
+- No raw JSON/List returns for MCP tools.
+- No direct `akshare` calls without `ak_cache`.
+- No suppression of type errors with `# type: ignore` unless absolutely necessary.

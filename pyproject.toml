@@ -1,6 +1,6 @@
 [project]
 name = "mcp-aktools"
-version = "0.1.14"
+version = "0.2.0"
 description = "MCP Server for stock and crypto"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -19,6 +19,18 @@ Repository = "https://github.com/aahl/mcp-aktools.git"
 
 [project.scripts]
 mcp-aktools = "mcp_aktools:main"
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "N"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
 
 [build-system]
 requires = ["hatchling"]

@@ -1,133 +1,138 @@
 # 📈 AkTools MCP Server
 
 <!-- mcp-name: io.github.aahl/mcp-aktools -->
-<!-- [![MCP Badge](https://lobehub.com/badge/mcp/aahl-mcp-aktools)](https://lobehub.com/mcp/aahl-mcp-aktools) -->
-<!-- [![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/1dd74d48-e77b-49f9-8d67-8c99603336e1) -->
+基于 [akshare](https://github.com/akfamily/akshare) 的 MCP (Model Context Protocol) 服务器，为 AI Agent 提供专业的金融数据查询、深度分析及实战交易技能。
 
-基于 akshare 的 MCP (Model Context Protocol) 服务器，提供股票、加密货币的数据查询和分析功能。
+## 🌟 核心亮点
 
+- 🧠 **不仅是工具，更是技能**: 支持 MCP Prompts 和 Resources，内置金融分析 SOP。
+- 💹 **全市场覆盖**: A股、港股、美股、加密货币数据一站式获取。
+- 📊 **可视化增强**: 支持 ASCII 字符走势图，让 AI 的分析更直观。
+- 🛡️ **双层缓存**: 内存 + 磁盘双层缓存机制，极致响应速度，保护数据源。
+- 💼 **实战模拟**: 内置模拟持仓管理，支持 AI 自动跟踪盈亏。
 
-## 功能
+---
 
-- 🔍 **股票搜索**: 根据股票名称、公司简称等关键词查找股票代码
-- ℹ️ **股票信息**: 获取股票的详细信息，包括价格、市值等
-- 📊 **市场概况**: 获取A股市场的涨停板、龙虎榜、资金流向等
-- 💹 **历史价格**: 获取股票、加密货币历史价格数据，包含技术分析指标
-- 📰 **相关新闻**: 获取股票、加密货币相关的最新新闻资讯
-- 💸 **财务指标**: 支持A股和港美股的财务报告关键指标查询
+## 🚀 快速开始
 
+### 方式 1: 自动安装 (推荐)
 
-## 安装
+在你的 AI 终端中根据客户端类型执行：
 
-### 方式1: uvx
-```yaml
+#### **OpenCode (Sisyphus)**
+直接运行交互式命令：
+```bash
+opencode mcp add
+```
+按照提示进行操作：
+1. **Location**: 选择 `Global` (推荐) 或 `Current project`
+2. **Name**: 输入 `aktools`
+3. **Type**: 选择 `Local`
+4. **Command**: 输入 `uvx mcp-aktools`
+
+#### **Claude Code**
+```bash
+claude mcp add aktools -- uvx mcp-aktools
+```
+
+#### **Cursor**
+[点击一键安装](https://cursor.com/zh/install-mcp?name=aktools&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3AtYWt0b29scyJdfQ%3D%3D)
+
+### 方式 2: 手动配置 (uvx)
+```json
 {
   "mcpServers": {
     "aktools": {
       "command": "uvx",
       "args": ["mcp-aktools"],
       "env": {
-        # 全部可选
-        "OKX_BASE_URL": "https://okx.4url.cn", # OKX地址，如果你的网络环境无法访问okx.com，可通过此选项配置反代地址
-        "BINANCE_BASE_URL": "https://bian.4url.cn", # 币安地址，默认: https://www.binance.com
-        "NEWSNOW_BASE_URL": "https://newsnow.busiyi.world", # Newsnow接口地址
-        "NEWSNOW_CHANNELS": "wallstreetcn-quick,cls-telegraph,jin10", # Newsnow资讯来源
+        "OKX_BASE_URL": "https://okx.4url.cn", 
+        "BINANCE_BASE_URL": "https://bian.4url.cn"
       }
     }
   }
 }
 ```
 
-### 方式2: [Smithery](https://smithery.ai/server/@aahl/mcp-aktools)
-> 需要通过OAuth授权或Smithery key
+---
 
-```yaml
-{
-  "mcpServers": {
-    "aktools": {
-      "url": "https://server.smithery.ai/@aahl/mcp-aktools/mcp" # Streamable HTTP
-    }
-  }
-}
-```
+## 🧠 高级技能 (Advanced Skills)
 
-### 方式3: Docker
+本项目为 OpenCode / Claude Code 注入了深度金融分析技能：
+
+### 1. 提示词工作流 (Prompts)
+- `analyze-stock`: 触发资深分析师人格，对个股进行技术面+基本面+消息面的全方位诊断。
+- `market-pulse`: 研判大盘脉搏，分析涨停家数与板块资金流向。
+
+### 2. 知识库资源 (Resources)
+- `skill://trading/logic/technical-analysis`: 内置 MACD、RSI、布林带等指标的专业解读标准。
+- `skill://trading/strategy/risk-management`: 内置仓位管理与止损风险控制准则。
+
+### 3. 复合工具 (Composite Tools)
+- `composite_stock_diagnostic`: 一键获取聚合后的诊断报告，减少 AI 多次调用的幻觉。
+- `draw_ascii_chart`: 在聊天框中直接生成价格趋势字符图。
+- `market_anomaly_scan`: 实时扫描“火箭发射”、“大笔买入”等市场异动。
+- `backtest_strategy`: 基于历史数据验证交易策略（SMA/RSI/MACD）。
+- `sector_valuation` / `sector_rotation`: 研判行业估值水平与资金轮动方向。
+- `northbound_funds`: 跟踪北向资金（聪明钱）的每日流入流出。
+- `institutional_holding_summary`: 汇总个股的机构持仓深度信息。
+- `backtest_strategy`: 基于历史数据验证交易策略（SMA/RSI/MACD）。
+- `sector_valuation` / `sector_rotation`: 研判行业估值水平与资金轮动方向。
+- `northbound_funds`: 跟踪北向资金（聪明钱）的每日流入流出。
+- `institutional_holding_summary`: 汇总个股的机构持仓深度信息。
+
+---
+
+## 🛠️ 常用工具列表
+
+<details>
+<summary><strong>📈 股票 & 市场</strong></summary>
+
+- `search`: 关键词查找代码
+- `stock_info`: 基本信息
+- `stock_prices`: 历史价格 (含技术指标)
+- `stock_indicators_a/hk/us`: 财务关键指标
+- `stock_zt_pool_em`: 涨停股池
+- `stock_lhb_ggtj_sina`: 龙虎榜统计
+
+</details>
+
+<details>
+<summary><strong>₿ 加密货币</strong></summary>
+
+- `okx_prices`: K线数据
+- `okx_loan_ratios`: 杠杆多空比
+- `binance_ai_report`: 币安 AI 深度报告
+
+</details>
+
+<details>
+<summary><strong>💼 模拟实战</strong></summary>
+
+- `portfolio_add`: 加入模拟持仓
+- `portfolio_view`: 查看实时盈亏
+- `trading_suggest`: AI 投资建议
+
+</details>
+
+---
+
+## 👨‍💻 开发与贡献
+
+本项目遵循 `AGENTS.md` 中的 **OpenCode / Sisyphus** 开发规范。
+
 ```bash
-mkdir /opt/mcp-aktools
-cd /opt/mcp-aktools
-wget https://raw.githubusercontent.com/aahl/mcp-aktools/refs/heads/main/docker-compose.yml
-docker-compose up -d
-```
-```yaml
-{
-  "mcpServers": {
-    "aktools": {
-      "url": "http://0.0.0.0:8808/mcp" # Streamable HTTP
-    }
-  }
-}
+# 同步环境
+uv sync
+
+# 本地运行 (stdio)
+uv run mcp-aktools
+
+# 检查技能注册情况
+uv run mcp-aktools inspect
 ```
 
-### 快速开始
-- 在线体验: [![fastmcp.cloud](https://img.shields.io/badge/Cloud-+?label=FastMCP)](https://fastmcp.cloud/xiaomi/aktools/chat)
-- 在线体验: [![smithery.ai](https://smithery.ai/badge/@aahl/mcp-aktools)](https://smithery.ai/server/@aahl/mcp-aktools)
-- 添加到 Cursor [![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/zh/install-mcp?name=aktools&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3AtYWt0b29scyJdfQ%3D%3D)
-- 添加到 VS Code [![Install MCP Server](https://img.shields.io/badge/VS_Code-+?label=Add+MCP+Server&color=0098FF)](https://insiders.vscode.dev/redirect?url=vscode:mcp/install%3F%7B%22name%22%3A%22aktools%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22mcp-aktools%22%5D%7D)
-- 添加到 Cherry Studio [![Install MCP Server](https://img.shields.io/badge/Cherry_Studio-+?label=Add+MCP+Server&color=FF5F5F)](https://gitee.com/link?target=cherrystudio%3A%2F%2Fmcp%2Finstall%3Fservers%3DeyJtY3BTZXJ2ZXJzIjp7ImFrdG9vbHMiOnsiY29tbWFuZCI6InV2eCIsImFyZ3MiOlsibWNwLWFrdG9vbHMiXX19fQ%3D%3D)
-- 添加到 Claude Code, 执行命令: `claude mcp add aktools -- uvx mcp-aktools`
-- 添加到 OpenAI CodeX, 执行命令: `codex mcp add aktools -- uvx mcp-aktools`
+---
 
-------
-
-## 🛠️ 可用工具
-
-<details>
-<summary><strong>个股相关</strong></summary>
-
-- `search` - 查找股票代码，支持A股、港股、美股
-- `stock_info` - 获取股票信息
-- `stock_prices` - 获取股票历史价格
-- `stock_indicators_a` - A股关键指标
-- `stock_indicators_hk` - 港股关键指标
-- `stock_indicators_us` - 美股关键指标
-- `trading_suggest` - 给出投资建议
-
-</details>
-
-<details>
-<summary><strong>A股市场</strong></summary>
-
-- `get_current_time` - 获取当前时间及A股交易日信息
-- `stock_zt_pool_em` - A股涨停股池
-- `stock_zt_pool_strong_em` - A股强势股池
-- `stock_lhb_ggtj_sina` - A股龙虎榜统计
-- `stock_sector_fund_flow_rank` - A股概念资金流向
-
-</details>
-
-<details>
-<summary><strong>财经资讯</strong></summary>
-
-- `stock_news` - 获取个股/加密货币相关新闻
-- `stock_news_global` - 全球财经快讯
-
-</details>
-
-<details>
-<summary><strong>加密货币</strong></summary>
-
-- `okx_prices` - 获取加密货币历史价格
-- `okx_loan_ratios` - 获取加密货币杠杆多空比
-- `okx_taker_volume` - 获取加密货币主动买卖情况
-- `binance_ai_report` - 获取加密货币AI分析报告
-
-</details>
-
-
-------
-
-<a href="https://glama.ai/mcp/servers/@al-one/mcp-aktools">
-  <img width="400" src="https://glama.ai/mcp/servers/@al-one/mcp-aktools/badge">
-</a>
-
-[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/aahl-mcp-aktools-badge.png)](https://mseep.ai/app/aahl-mcp-aktools)
+[![FastMCP](https://img.shields.io/badge/Powered%20by-FastMCP-blue)](https://github.com/jlowin/fastmcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
