@@ -54,26 +54,26 @@ opencode mcp add
 1. **Location**: 选择 `Global`
 2. **Name**: 输入 `aktools-pro`
 3. **Type**: 选择 `Local`
-4. **Command**: 输入 `uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro`
+4. **Command**: 输入 `uvx aktools-pro`
 
 #### **Claude Code / OpenAI Codex**
 ```bash
 # Claude Code
-claude mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
+claude mcp add aktools-pro -- uvx aktools-pro
 
 # OpenAI Codex (或其他支持 CLI 安装的客户端)
-codex mcp add aktools-pro -- uvx --from git+https://github.com/tchivs/mcp-aktools.git aktools-pro
+codex mcp add aktools-pro -- uvx aktools-pro
 ```
 
 #### **Cursor / VS Code / Cherry Studio**
-- **Cursor**: 手动在 `mcpServers` 配置中添加以下 JSON，或 [点击一键安装](https://cursor.com/zh/install-mcp?name=aktools-pro&config=eyJjb21tYW5kIjoiaXZ4IiwiYXJncyI6WyItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL3RjaGl2cy9tY3AtYWt0b29scy5naXQiLCJha3Rvb2xzLXBybyJdfQ%3D%3D)
-- **VS Code**: [![Install MCP Server](https://img.shields.io/badge/VS_Code-+?label=Add+MCP+Server&color=0098FF)](https://insiders.vscode.dev/redirect?url=vscode:mcp/install%3F%7B%22name%22%3A%22aktools-pro%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--from%22%2C%22git+https://github.com/tchivs/mcp-aktools.git%22%2C%22aktools-pro%22%5D%7D)
-- **Cherry Studio**: [![Install MCP Server](https://img.shields.io/badge/Cherry_Studio-+?label=Add+MCP+Server&color=FF5F5F)](https://gitee.com/link?target=cherrystudio%3A%2F%2Fmcp%2Finstall%3Fservers%3DeyJtY3BTZXJ2ZXJzIjp7ImFrdG9vbHMtcHJvIjp7ImNvbW1hbmQiOiJ1dngiLCJhcmdzIjpbIi0tZnJvbSIsImdpdCtodHRwczovL2dpdGh1Yi5jb20vdGNoaXZzL21jcC1ha3Rvb2xzLmdpdCIsImFrdG9vbHMtcHJvIl19fX0%3D)
+- **Cursor**: 手动在 `mcpServers` 配置中添加以下 JSON，或 [点击一键安装](https://cursor.com/zh/install-mcp?name=aktools-pro&config=eyJjb21tYW5kIjoiaXZ4IiwiYXJncyI6WyJha3Rvb2xzLXBybyJdfQ==)
+- **VS Code**: [![Install MCP Server](https://img.shields.io/badge/VS_Code-+?label=Add+MCP+Server&color=0098FF)](https://insiders.vscode.dev/redirect?url=vscode:mcp/install%3F%7B%22name%22%3A%22aktools-pro%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22aktools-pro%22%5D%7D)
+- **Cherry Studio**: [![Install MCP Server](https://img.shields.io/badge/Cherry_Studio-+?label=Add+MCP+Server&color=FF5F5F)](https://gitee.com/link?target=cherrystudio%3A%2F%2Fmcp%2Finstall%3Fservers%3DeyJtY3BTZXJ2ZXJzIjp7ImFrdG9vbHMtcHJvIjp7ImNvbW1hbmQiOiJ1dngiLCJhcmdzIjpbImFrdG9vbHMtcHJvIl19fX0%3D)
 
 ```json
 "aktools-pro": {
   "command": "uvx",
-  "args": ["--from", "git+https://github.com/tchivs/mcp-aktools.git", "aktools-pro"]
+  "args": ["aktools-pro"]
 }
 ```
 
