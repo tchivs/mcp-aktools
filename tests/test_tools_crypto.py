@@ -1,5 +1,6 @@
 """Tests for crypto module tools."""
 
+import pytest
 import pandas as pd
 from unittest import mock
 
@@ -70,14 +71,34 @@ class TestOkxPrices:
         mock_response = mock.Mock()
         mock_response.json.return_value = {
             "data": [
-                ["1704067200000", "42000.00", "42500.00", "43000.00", "41500.00", "100.00", "4200000.00", "4200000.00", "1"],
-                ["1704153600000", "42500.00", "43000.00", "43500.00", "42000.00", "150.00", "6375000.00", "6375000.00", "1"],
+                [
+                    "1704067200000",
+                    "42000.00",
+                    "42500.00",
+                    "43000.00",
+                    "41500.00",
+                    "100.00",
+                    "4200000.00",
+                    "4200000.00",
+                    "1",
+                ],
+                [
+                    "1704153600000",
+                    "42500.00",
+                    "43000.00",
+                    "43500.00",
+                    "42000.00",
+                    "150.00",
+                    "6375000.00",
+                    "6375000.00",
+                    "1",
+                ],
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_prices_fn(instId="BTC-USDT", bar="1H", limit=2)
-            
+
             assert isinstance(result, str)
             assert "时间" in result
             assert "收盘" in result
@@ -86,10 +107,10 @@ class TestOkxPrices:
         """Test handling of empty response."""
         mock_response = mock.Mock()
         mock_response.json.return_value = {"data": []}
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_prices_fn(instId="BTC-USDT", bar="1H", limit=2)
-            
+
             # Should handle gracefully
             assert isinstance(result, (str, pd.DataFrame))
 
@@ -106,10 +127,10 @@ class TestOkxLoanRatios:
                 ["1704153600000", "1.6"],
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_loan_fn(symbol="BTC", period="1H")
-            
+
             assert isinstance(result, str)
             assert "时间" in result
             assert "多空比" in result
@@ -127,10 +148,10 @@ class TestOkxTakerVolume:
                 ["1704153600000", "120.00", "180.00"],
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_taker_fn(symbol="BTC", period="1H", instType="SPOT")
-            
+
             assert isinstance(result, str)
             assert "时间" in result
             assert "卖出量" in result
@@ -154,10 +175,10 @@ class TestBinanceAiReport:
                 }
             }
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.post", return_value=mock_response):
             result = binance_ai_fn(symbol="BTC")
-            
+
             assert isinstance(result, str)
             assert "BTC" in result or "Point 1" in result or "Analysis" in result
 
@@ -166,29 +187,30 @@ class TestBinanceAiReport:
         mock_response = mock.Mock()
         mock_response.json.side_effect = Exception("Invalid JSON")
         mock_response.text = "Some text response"
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.post", return_value=mock_response):
             result = binance_ai_fn(symbol="BTC")
-            
+
             assert isinstance(result, str)
 
 
 class TestCryptoCompositeDiagnostic:
     """Test the crypto_composite_diagnostic tool."""
 
-    def test_returns_composite_report(self):
+    @pytest.mark.asyncio
+    async def test_returns_composite_report(self):
         """Test that function returns a composite diagnostic report."""
         mock_prices = "时间,开盘,收盘,最高,最低\n2024-01-01,42000,42500,43000,41500"
         mock_loan = "时间,多空比\n2024-01-01,1.5"
         mock_taker = "时间,卖出量,买入量\n2024-01-01,100,150"
         mock_ai = "BTC AI Analysis Report"
-        
+
         with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=mock_prices):
             with mock.patch("mcp_aktools.tools.crypto.okx_loan_ratios", return_value=mock_loan):
                 with mock.patch("mcp_aktools.tools.crypto.okx_taker_volume", return_value=mock_taker):
                     with mock.patch("mcp_aktools.tools.crypto.binance_ai_report", return_value=mock_ai):
-                        result = crypto_diag_fn(symbol="BTC")
-                        
+                        result = await crypto_diag_fn(symbol="BTC")
+
                         assert isinstance(result, str)
                         assert "加密货币综合诊断" in result
                         assert "近期价格" in result
@@ -202,13 +224,13 @@ class TestDrawCryptoChart:
 
     def test_returns_ascii_chart(self):
         """Test that function returns an ASCII chart."""
-        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join([
-            f"2024-01-{i+1:02d},42000,42500,43000,41500" for i in range(20)
-        ])
-        
+        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join(
+            [f"2024-01-{i + 1:02d},42000,42500,43000,41500" for i in range(20)]
+        )
+
         with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=mock_prices):
             result = draw_crypto_chart_fn(symbol="BTC", bar="1D")
-            
+
             assert isinstance(result, str)
             assert "BTC" in result
             assert "最低" in result
@@ -218,7 +240,7 @@ class TestDrawCryptoChart:
         """Test handling of insufficient data."""
         with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=""):
             result = draw_crypto_chart_fn(symbol="BTC", bar="1D")
-            
+
             assert isinstance(result, str)
             assert "不足" in result or "无法" in result
 
@@ -228,13 +250,13 @@ class TestBacktestCryptoStrategy:
 
     def test_sma_strategy(self):
         """Test SMA strategy backtest."""
-        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join([
-            f"2024-01-{i+1:02d},42000,{42000+i*100},43000,41500" for i in range(30)
-        ])
-        
+        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join(
+            [f"2024-01-{i + 1:02d},42000,{42000 + i * 100},43000,41500" for i in range(30)]
+        )
+
         with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=mock_prices):
             result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
-            
+
             assert isinstance(result, str)
             assert "策略回测" in result
             assert "累计收益" in result
@@ -256,10 +278,10 @@ class TestOkxFundingRate:
                 }
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_funding_fn(symbol="BTC")
-            
+
             assert isinstance(result, str)
             assert "资金费率" in result
             assert "当前费率" in result
@@ -276,10 +298,10 @@ class TestOkxFundingRate:
                 }
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_funding_fn(symbol="BTC")
-            
+
             assert isinstance(result, str)
             assert "BTC" in result
 
@@ -299,10 +321,10 @@ class TestOkxOpenInterest:
                 }
             ]
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = okx_oi_fn(symbol="BTC")
-            
+
             assert isinstance(result, str)
             assert "持仓量" in result
 
@@ -320,12 +342,13 @@ class TestFearGreedIndex:
                     "value_classification": "Greed",
                     "timestamp": "1704067200",
                 }
-            ] * 7
+            ]
+            * 7
         }
-        
+
         with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
             result = fgi_fn()
-            
+
             assert isinstance(result, str)
             assert "恐惧贪婪指数" in result
             assert "75" in result or "Greed" in result
@@ -333,4 +356,5 @@ class TestFearGreedIndex:
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__, "-v"])

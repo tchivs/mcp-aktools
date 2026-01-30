@@ -1,5 +1,6 @@
 """Tests for precious_metals module tools."""
 
+import pytest
 import pandas as pd
 from unittest import mock
 
@@ -152,7 +153,8 @@ class TestPmBenchmarkPrice:
 class TestPmCompositeDiagnostic:
     """Test the pm_composite_diagnostic tool."""
 
-    def test_returns_composite_report(self):
+    @pytest.mark.asyncio
+    async def test_returns_composite_report(self):
         """Test that function returns a composite diagnostic report."""
         mock_spot = "日期,开盘价,收盘价\n2025-01-01,500.0,501.0"
         mock_intl = "时间,最新价\n2025-01-01,2000.0"
@@ -169,7 +171,7 @@ class TestPmCompositeDiagnostic:
                             with mock.patch(
                                 "mcp_aktools.tools.precious_metals.pm_benchmark_price", return_value=mock_benchmark
                             ):
-                                result = pm_composite_diagnostic_fn(metal="gold")
+                                result = await pm_composite_diagnostic_fn(metal="gold")
 
                                 assert isinstance(result, str)
                                 assert "贵金属综合诊断" in result
@@ -180,7 +182,8 @@ class TestPmCompositeDiagnostic:
                                 assert "期现基差" in result
                                 assert "上海基准价" in result
 
-    def test_handles_partial_data(self):
+    @pytest.mark.asyncio
+    async def test_handles_partial_data(self):
         """Test handling when some data sources fail."""
         mock_spot = "日期,开盘价,收盘价\n2025-01-01,500.0,501.0"
         mock_empty = ""
@@ -193,7 +196,7 @@ class TestPmCompositeDiagnostic:
                             with mock.patch(
                                 "mcp_aktools.tools.precious_metals.pm_benchmark_price", return_value=mock_spot
                             ):
-                                result = pm_composite_diagnostic_fn(metal="gold")
+                                result = await pm_composite_diagnostic_fn(metal="gold")
 
                                 assert isinstance(result, str)
                                 assert "贵金属综合诊断" in result
