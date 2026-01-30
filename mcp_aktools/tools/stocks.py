@@ -1,11 +1,14 @@
+from datetime import datetime, timedelta
+
 import akshare as ak
 import pandas as pd
-from datetime import datetime, timedelta
+from fastmcp import Context
 from pydantic import Field
+
 from ..server import mcp
-from ..shared.fields import field_symbol, field_market
-from ..shared.utils import ak_cache, ak_search
+from ..shared.fields import field_market, field_symbol
 from ..shared.indicators import add_technical_indicators
+from ..shared.utils import ak_cache, ak_search
 
 
 @mcp.tool(
@@ -13,14 +16,30 @@ from ..shared.indicators import add_technical_indicators
     description="根据股票名称、公司名称等关键词查找股票代码, 不支持加密货币。"
     "该工具比较耗时，当你知道股票代码或用户已指定股票代码时，建议直接通过股票代码使用其他工具",
 )
-def search(
+async def search(
     keyword: str = Field(description="搜索关键词，公司名称、股票名称、股票代码、证券简称"),
     market: str = field_market,
+    ctx: Context | None = None,
 ):
+    if ctx:
+        await ctx.report_progress(0, 100, "正在初始化搜索...")
+
+    if ctx:
+        await ctx.report_progress(30, 100, "正在查询市场数据...")
+
     info = ak_search(None, keyword, market)
+
+    if ctx:
+        await ctx.report_progress(70, 100, "正在匹配关键词...")
+
     if info is not None:
+        if ctx:
+            await ctx.report_progress(100, 100, "搜索完成")
         suffix = f"交易市场: {market}"
         return "\n".join([info.to_string(), suffix])
+
+    if ctx:
+        await ctx.report_progress(100, 100, "未找到结果")
     return f"Not Found for {keyword}"
 
 
