@@ -49,6 +49,7 @@ def load_portfolio():
 
 
 def save_portfolio(data):
+    os.makedirs(os.path.dirname(PORTFOLIO_FILE), exist_ok=True)
     with open(PORTFOLIO_FILE, "w") as f:
         json.dump(data, f, indent=2)
 
