@@ -8,11 +8,11 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/tchivs/mcp-aktools/releases"><img src="https://img.shields.io/github/v/release/tchivs/mcp-aktools?color=blue&label=version&style=flat-square" alt="Version"></a>
-    <a href="https://github.com/tchivs/mcp-aktools/blob/main/LICENSE"><img src="https://img.shields.io/github/license/tchivs/mcp-aktools?color=orange&style=flat-square" alt="License"></a>
+    <a href="https://github.com/tchivs/aktools-pro/releases"><img src="https://img.shields.io/github/v/release/tchivs/aktools-pro?color=blue&label=version&style=flat-square" alt="Version"></a>
+    <a href="https://github.com/tchivs/aktools-pro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/tchivs/aktools-pro?color=orange&style=flat-square" alt="License"></a>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square" alt="Python"></a>
     <a href="https://github.com/jlowin/fastmcp"><img src="https://img.shields.io/badge/Powered%20by-FastMCP-blue?style=flat-square" alt="FastMCP"></a>
-    <a href="https://github.com/tchivs/mcp-aktools/stargazers"><img src="https://img.shields.io/github/stars/tchivs/mcp-aktools?style=flat-square" alt="GitHub stars"></a>
+    <a href="https://github.com/tchivs/aktools-pro/stargazers"><img src="https://img.shields.io/github/stars/tchivs/aktools-pro?style=flat-square" alt="GitHub stars"></a>
 </p>
 
 [功能亮点](#-核心特性) • [系统架构](#-系统架构) • [快速开始](#-快速开始) • [工具一览](#-工具一览) • [实战示例](#-实战示例)
@@ -101,7 +101,7 @@ claude mcp add aktools-pro -- uvx aktools-pro
 ```bash
 mkdir /opt/aktools-pro
 cd /opt/aktools-pro
-wget https://raw.githubusercontent.com/tchivs/mcp-aktools/main/docker-compose.yml
+wget https://raw.githubusercontent.com/tchivs/aktools-pro/main/docker-compose.yml
 docker-compose up -d
 ```
 </details>
