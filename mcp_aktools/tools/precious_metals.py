@@ -1,7 +1,5 @@
 """贵金属数据工具模块"""
 
-from typing import Callable, cast
-
 import akshare as ak
 import pandas as pd
 from fastmcp import Context
@@ -195,37 +193,29 @@ async def pm_composite_diagnostic(
     else:
         return "不支持的金属类型，仅支持: gold, silver"
 
-    # 调用各个工具函数
-    pm_spot_fn = cast(Callable[..., str], pm_spot_prices)
-    pm_intl_fn = cast(Callable[..., str], pm_international_prices)
-    pm_etf_fn = cast(Callable[..., str], pm_etf_holdings)
-    pm_comex_fn = cast(Callable[..., str], pm_comex_inventory)
-    pm_basis_fn = cast(Callable[..., str], pm_basis)
-    pm_benchmark_fn = cast(Callable[..., str], pm_benchmark_price)
-
     if ctx:
         await ctx.report_progress(15, 100, "获取现货价格...")
-    spot_data = pm_spot_fn(symbol=sge_symbol, limit=10)
+    spot_data = pm_spot_prices.fn(symbol=sge_symbol, limit=10)
 
     if ctx:
         await ctx.report_progress(30, 100, "获取国际价格...")
-    intl_data = pm_intl_fn(symbol=intl_symbol)
+    intl_data = pm_international_prices.fn(symbol=intl_symbol)
 
     if ctx:
         await ctx.report_progress(45, 100, "获取ETF持仓...")
-    etf_data = pm_etf_fn(metal=metal, limit=10)
+    etf_data = pm_etf_holdings.fn(metal=metal, limit=10)
 
     if ctx:
         await ctx.report_progress(60, 100, "获取COMEX库存...")
-    comex_data = pm_comex_fn(metal=metal_cn, limit=10)
+    comex_data = pm_comex_inventory.fn(metal=metal_cn, limit=10)
 
     if ctx:
         await ctx.report_progress(75, 100, "获取期现基差...")
-    basis_data = pm_basis_fn(metal=metal_cn)
+    basis_data = pm_basis.fn(metal=metal_cn)
 
     if ctx:
         await ctx.report_progress(90, 100, "获取基准价格...")
-    benchmark_data = pm_benchmark_fn(metal=metal, limit=10)
+    benchmark_data = pm_benchmark_price.fn(metal=metal, limit=10)
 
     if ctx:
         await ctx.report_progress(100, 100, "诊断完成")

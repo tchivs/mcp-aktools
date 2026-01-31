@@ -41,7 +41,7 @@ def portfolio_view():
     results = []
     for k, v in p.items():
         try:
-            prices = stock_prices(v["symbol"], v["market"], limit=1)
+            prices = stock_prices.fn(v["symbol"], v["market"], limit=1)
             current_price = float(prices.split("\n")[-1].split(",")[2])
             profit = (current_price - v["price"]) * v["volume"]
             ratio = (current_price / v["price"] - 1) * 100
@@ -65,7 +65,7 @@ def portfolio_chart():
     holdings = []
     for k, v in p.items():
         try:
-            prices = stock_prices(v["symbol"], v["market"], limit=1)
+            prices = stock_prices.fn(v["symbol"], v["market"], limit=1)
             current_price = float(prices.split("\n")[-1].split(",")[2])
             ratio = (current_price / v["price"] - 1) * 100
             holdings.append({"name": k, "ratio": ratio})

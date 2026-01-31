@@ -1,5 +1,4 @@
 from io import StringIO
-from typing import Callable, cast
 
 import pandas as pd
 from fastmcp import Context
@@ -22,22 +21,18 @@ async def composite_stock_diagnostic(
     if ctx:
         await ctx.report_progress(0, 100, "开始综合诊断...")
 
-    # 内部组合调用
-    stock_prices_fn = cast(Callable[..., str], stock_prices)
-    stock_info_fn = cast(Callable[..., str], stock_info)
-    stock_news_fn = cast(Callable[..., str], stock_news)
-
+    # 通过 .fn 属性访问原始函数
     if ctx:
         await ctx.report_progress(20, 100, "获取历史价格...")
-    price_data = stock_prices_fn(symbol, market, limit=5)
+    price_data = stock_prices.fn(symbol, market, limit=5)
 
     if ctx:
         await ctx.report_progress(40, 100, "获取基本面信息...")
-    fundamental = stock_info_fn(symbol, market)
+    fundamental = stock_info.fn(symbol, market)
 
     if ctx:
         await ctx.report_progress(60, 100, "获取新闻动态...")
-    news = stock_news_fn(symbol, limit=3)
+    news = stock_news.fn(symbol, limit=3)
 
     if ctx:
         await ctx.report_progress(80, 100, "汇总分析结果...")
@@ -57,10 +52,10 @@ async def composite_stock_diagnostic(
     description="根据提供的价格列表生成一个简单的 ASCII 走势图，用于直观展示趋势",
 )
 def draw_ascii_chart(symbol: str = field_symbol, market: str = field_market):
-    stock_prices_fn = cast(Callable[..., str], stock_prices)
-    data = stock_prices_fn(symbol, market, limit=20)
-    lines = data.strip().split("\n")[1:]  # 跳过表头
-    prices = [float(l.split(",")[2]) for l in lines]  # 取收盘价
+    # 通过 .fn 属性访问原始函数
+    data = stock_prices.fn(symbol, market, limit=20)
+    lines = data.strip().split("\n")[1:]
+    prices = [float(line.split(",")[2]) for line in lines]
 
     if not prices:
         return "数据不足，无法绘图"
@@ -93,8 +88,7 @@ def backtest_strategy(
     strategy: str = Field("SMA", description="策略类型: SMA/RSI/MACD/BOLL/MA_CROSS/KDJ"),
     days: int = Field(252, description="回测天数"),
 ):
-    stock_prices_fn = cast(Callable[..., str], stock_prices)
-    data = stock_prices_fn(symbol=symbol, market=market, limit=days)
+    data = stock_prices.fn(symbol=symbol, market=market, limit=days)
     if not data or data.startswith("Not Found"):
         return f"未找到可回测数据: {symbol}.{market}"
 
