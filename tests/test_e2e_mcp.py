@@ -35,7 +35,7 @@ class TestToolRegistration:
     def test_stock_tools_registered(self):
         """Test stock-related tools."""
         tools = mcp._tool_manager._tools
-        
+
         expected_tools = [
             "search",
             "stock_info",
@@ -46,14 +46,14 @@ class TestToolRegistration:
             "stock_indicators_hk",
             "stock_indicators_us",
         ]
-        
+
         for tool in expected_tools:
             assert tool in tools, f"Tool {tool} not registered"
 
     def test_crypto_tools_registered(self):
         """Test crypto-related tools."""
         tools = mcp._tool_manager._tools
-        
+
         expected_tools = [
             "okx_prices",
             "okx_loan_ratios",
@@ -66,14 +66,14 @@ class TestToolRegistration:
             "okx_open_interest",
             "fear_greed_index",
         ]
-        
+
         for tool in expected_tools:
             assert tool in tools, f"Tool {tool} not registered"
 
     def test_market_tools_registered(self):
         """Test market-related tools."""
         tools = mcp._tool_manager._tools
-        
+
         expected_tools = [
             "get_current_time",
             "stock_zt_pool_em",
@@ -86,30 +86,30 @@ class TestToolRegistration:
             "stock_news_global",
             "market_anomaly_scan",
         ]
-        
+
         for tool in expected_tools:
             assert tool in tools, f"Tool {tool} not registered"
 
     def test_portfolio_tools_registered(self):
         """Test portfolio-related tools."""
         tools = mcp._tool_manager._tools
-        
+
         expected_tools = ["portfolio_add", "portfolio_view"]
-        
+
         for tool in expected_tools:
             assert tool in tools, f"Tool {tool} not registered"
 
     def test_analysis_tools_registered(self):
         """Test analysis-related tools."""
         tools = mcp._tool_manager._tools
-        
+
         expected_tools = [
             "composite_stock_diagnostic",
             "draw_ascii_chart",
             "backtest_strategy",
             "trading_suggest",
         ]
-        
+
         for tool in expected_tools:
             assert tool in tools, f"Tool {tool} not registered"
 
@@ -144,7 +144,7 @@ class TestToolInvocation:
         """Test invoking get_current_time tool."""
         tool = mcp._tool_manager._tools.get("get_current_time")
         assert tool is not None
-        
+
         # Call the underlying function
         result = tool.fn()
         assert isinstance(result, str)
@@ -154,7 +154,7 @@ class TestToolInvocation:
         """Test invoking trading_suggest tool."""
         tool = mcp._tool_manager._tools.get("trading_suggest")
         assert tool is not None
-        
+
         result = tool.fn(symbol="000001", action="buy", score=85, reason="Test")
         assert isinstance(result, dict)
         assert result["symbol"] == "000001"
@@ -164,10 +164,10 @@ class TestToolInvocation:
         """Test invoking portfolio_add tool."""
         tool = mcp._tool_manager._tools.get("portfolio_add")
         assert tool is not None
-        
+
         from unittest import mock
         from mcp_aktools.shared import constants
-        
+
         # Mock the portfolio file
         with mock.patch.object(constants, "PORTFOLIO_FILE", "/tmp/test_portfolio.json"):
             result = tool.fn(symbol="000001", price=10.5, volume=100, market="sh")
@@ -186,13 +186,13 @@ class TestResourceRegistration:
     def test_resource_uris(self):
         """Test that resources have valid URIs."""
         resources = mcp._resource_manager._resources
-        
+
         expected_uris = [
             "skill://crypto/logic/analysis-sop",
             "skill://trading/logic/technical-analysis",
             "skill://trading/strategy/risk-management",
         ]
-        
+
         for uri in expected_uris:
             assert uri in resources, f"Resource {uri} not registered"
 
@@ -214,14 +214,14 @@ class TestPromptRegistration:
     def test_prompt_names(self):
         """Test that expected prompts exist."""
         prompts = mcp._prompt_manager._prompts
-        
+
         expected_prompts = [
             "analyze-stock",
             "analyze-crypto",
             "market-pulse",
             "crypto-pulse",
         ]
-        
+
         for name in expected_prompts:
             assert name in prompts, f"Prompt {name} not registered"
 
@@ -241,9 +241,9 @@ class TestMCPProtocolCompliance:
         for name, tool in mcp._tool_manager._tools.items():
             mcp_tool = tool.to_mcp_tool()
             tools.append(mcp_tool)
-        
+
         assert len(tools) == len(mcp._tool_manager._tools)
-        
+
         for tool in tools:
             assert tool.name
             assert tool.inputSchema
@@ -252,12 +252,14 @@ class TestMCPProtocolCompliance:
         """Test that resources can be exported for resources/list."""
         resources = []
         for uri, resource in mcp._resource_manager._resources.items():
-            resources.append({
-                "uri": uri,
-                "name": resource.name,
-                "description": resource.description,
-            })
-        
+            resources.append(
+                {
+                    "uri": uri,
+                    "name": resource.name,
+                    "description": resource.description,
+                }
+            )
+
         assert len(resources) == len(mcp._resource_manager._resources)
 
     def test_prompts_list_export(self):
@@ -265,11 +267,13 @@ class TestMCPProtocolCompliance:
         prompts = []
         for name, prompt in mcp._prompt_manager._prompts.items():
             mcp_prompt = prompt.to_mcp_prompt()
-            prompts.append({
-                "name": name,
-                "description": mcp_prompt.description,
-            })
-        
+            prompts.append(
+                {
+                    "name": name,
+                    "description": mcp_prompt.description,
+                }
+            )
+
         assert len(prompts) == len(mcp._prompt_manager._prompts)
 
 
@@ -285,7 +289,7 @@ class TestIntegrationScenarios:
             "draw_ascii_chart",
             "trading_suggest",
         ]
-        
+
         for tool in required_tools:
             assert tool in mcp._tool_manager._tools, f"Workflow tool {tool} missing"
 
@@ -300,9 +304,137 @@ class TestIntegrationScenarios:
             "draw_crypto_chart",
             "fear_greed_index",
         ]
-        
+
         for tool in required_tools:
             assert tool in mcp._tool_manager._tools, f"Workflow tool {tool} missing"
+
+
+class TestFunctionToolCallability:
+    """Test that FunctionTool.fn is callable for composite tools.
+
+    This prevents regression of the 'FunctionTool object is not callable' bug.
+    These tests do NOT use mocks to verify real internal call paths.
+    """
+
+    def test_all_tools_have_callable_fn(self):
+        """Verify all registered tools have callable .fn attribute."""
+        for name, tool in mcp._tool_manager._tools.items():
+            assert hasattr(tool, "fn"), f"Tool {name} missing .fn attribute"
+            assert callable(tool.fn), f"Tool {name}.fn is not callable"
+
+    def test_stock_prices_fn_callable(self):
+        """Test stock_prices.fn is directly callable."""
+        tool = mcp._tool_manager._tools.get("stock_prices")
+        assert callable(tool.fn)
+        assert tool.fn.__name__ == "stock_prices"
+
+    def test_stock_info_fn_callable(self):
+        """Test stock_info.fn is directly callable."""
+        tool = mcp._tool_manager._tools.get("stock_info")
+        assert callable(tool.fn)
+
+    def test_stock_news_fn_callable(self):
+        """Test stock_news.fn is directly callable."""
+        tool = mcp._tool_manager._tools.get("stock_news")
+        assert callable(tool.fn)
+
+    def test_okx_prices_fn_callable(self):
+        """Test okx_prices.fn is directly callable."""
+        tool = mcp._tool_manager._tools.get("okx_prices")
+        assert callable(tool.fn)
+
+    def test_composite_tools_use_fn_attribute(self):
+        """Verify composite tools access dependencies via .fn attribute.
+
+        This is a code inspection test to ensure the fix is in place.
+        """
+        import inspect
+
+        composite_tool = mcp._tool_manager._tools.get("composite_stock_diagnostic")
+        source = inspect.getsource(composite_tool.fn)
+
+        assert "stock_prices.fn" in source, "composite_stock_diagnostic should use stock_prices.fn"
+        assert "stock_info.fn" in source, "composite_stock_diagnostic should use stock_info.fn"
+        assert "stock_news.fn" in source, "composite_stock_diagnostic should use stock_news.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_draw_ascii_chart_uses_fn_attribute(self):
+        """Verify draw_ascii_chart uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("draw_ascii_chart")
+        source = inspect.getsource(tool.fn)
+
+        assert "stock_prices.fn" in source, "draw_ascii_chart should use stock_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_backtest_strategy_uses_fn_attribute(self):
+        """Verify backtest_strategy uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("backtest_strategy")
+        source = inspect.getsource(tool.fn)
+
+        assert "stock_prices.fn" in source, "backtest_strategy should use stock_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_crypto_composite_uses_fn_attribute(self):
+        """Verify crypto_composite_diagnostic uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("crypto_composite_diagnostic")
+        source = inspect.getsource(tool.fn)
+
+        assert "okx_prices.fn" in source, "crypto_composite_diagnostic should use okx_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_pm_composite_uses_fn_attribute(self):
+        """Verify pm_composite_diagnostic uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("pm_composite_diagnostic")
+        source = inspect.getsource(tool.fn)
+
+        assert "pm_spot_prices.fn" in source, "pm_composite_diagnostic should use pm_spot_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_draw_crypto_chart_uses_fn_attribute(self):
+        """Verify draw_crypto_chart uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("draw_crypto_chart")
+        source = inspect.getsource(tool.fn)
+
+        assert "okx_prices.fn" in source, "draw_crypto_chart should use okx_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_backtest_crypto_uses_fn_attribute(self):
+        """Verify backtest_crypto_strategy uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("backtest_crypto_strategy")
+        source = inspect.getsource(tool.fn)
+
+        assert "okx_prices.fn" in source, "backtest_crypto_strategy should use okx_prices.fn"
+        assert "cast(Callable" not in source, "Should not use cast(Callable...) pattern"
+
+    def test_portfolio_view_uses_fn_attribute(self):
+        """Verify portfolio_view uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("portfolio_view")
+        source = inspect.getsource(tool.fn)
+
+        assert "stock_prices.fn" in source, "portfolio_view should use stock_prices.fn"
+
+    def test_portfolio_chart_uses_fn_attribute(self):
+        """Verify portfolio_chart uses .fn attribute."""
+        import inspect
+
+        tool = mcp._tool_manager._tools.get("portfolio_chart")
+        source = inspect.getsource(tool.fn)
+
+        assert "stock_prices.fn" in source, "portfolio_chart should use stock_prices.fn"
 
 
 if __name__ == "__main__":
