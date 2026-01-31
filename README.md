@@ -9,6 +9,7 @@
 
 <p align="center">
     <a href="https://github.com/tchivs/aktools-pro/releases"><img src="https://img.shields.io/github/v/release/tchivs/aktools-pro?color=blue&label=version&style=flat-square" alt="Version"></a>
+    <a href="https://pypi.org/project/aktools-pro/"><img src="https://img.shields.io/pypi/v/aktools-pro?color=green&style=flat-square" alt="PyPI"></a>
     <a href="https://github.com/tchivs/aktools-pro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/tchivs/aktools-pro?color=orange&style=flat-square" alt="License"></a>
     <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square" alt="Python"></a>
     <a href="https://github.com/jlowin/fastmcp"><img src="https://img.shields.io/badge/Powered%20by-FastMCP-blue?style=flat-square" alt="FastMCP"></a>
@@ -35,7 +36,7 @@
 | **📊 可视化增强** | **🛡️ 极致性能** |
 | 支持在聊天界面直接绘制 **ASCII 字符走势图**，让数据趋势一目了然。 | 采用 **内存 + 磁盘** 双层缓存机制，毫秒级响应，智能保护数据源。 |
 | **💼 实战模拟** | **🧪 策略实验室** |
-| 内置虚拟持仓管理系统，支持 AI 自动跟踪 **盈亏 (P&L)** 与胜率统计。 | 内置回测引擎，支持验证 **SMA / RSI / MACD** 等经典交易策略。 |
+| 内置虚拟持仓管理系统，支持 AI 自动跟踪 **盈亏 (P&L)** 与胜率统计。 | 内置回测引擎，支持验证 **SMA / RSI / MACD / BOLL / KDJ / MA_CROSS** 等经典交易策略。 |
 
 ## 🏗 系统架构
 
@@ -181,7 +182,9 @@ AkTools Pro 提供了 61 个专业工具，分为以下核心模块：
 - **加密 Prompts**: `analyze-crypto` (币种分析), `crypto-pulse` (币圈脉搏)
 - **贵金属 Prompts**: `analyze-precious-metal` (贵金属诊断), `precious-metal-pulse` (贵金属脉搏)
 - **Resources**: `skill://trading/logic/technical-analysis`, `skill://trading/logic/precious-metals-analysis`
-- **Portfolio**: `portfolio_add` (模拟交易), `portfolio_view` (盈亏分析), `trading_suggest` (AI建议)
+- **Dynamic Resources**: `crypto://{symbol}/analysis`, `pm://{metal}/analysis`, `fund://{code}/analysis`
+- **Portfolio**: `portfolio_add` (模拟交易), `portfolio_view` (盈亏分析), `portfolio_chart` (盈亏图表), `trading_suggest` (AI建议)
+- **Cache**: `cache_status` (缓存状态), `cache_clear` (清理缓存)
 
 ## 💡 实战示例
 
@@ -236,6 +239,12 @@ uv sync
 
 # 运行检查
 uv run aktools-pro inspect
+
+# 运行测试
+uv run pytest tests/ -v
+
+# 代码检查
+uv run ruff check mcp_aktools
 ```
 
 <div align="center">
