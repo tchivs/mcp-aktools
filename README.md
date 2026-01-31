@@ -120,7 +120,7 @@ docker-compose up -d
 
 ## 🛠 工具一览
 
-AkTools Pro 提供了 40+ 个专业工具，分为以下核心模块：
+AkTools Pro 提供了 61 个专业工具，分为以下核心模块：
 
 ### 📈 股票 & 市场 (Stock & Market)
 > 覆盖 A股/港股/美股 的行情与基本面
@@ -144,6 +144,35 @@ AkTools Pro 提供了 40+ 个专业工具，分为以下核心模块：
 - **价格**: `pm_spot_prices` (现货), `pm_international_prices` (外盘)
 - **库存**: `pm_etf_holdings` (ETF持仓), `pm_comex_inventory` (COMEX库存)
 - **分析**: `pm_basis` (期现基差), `pm_composite_diagnostic` (综合诊断)
+
+### 💱 外汇 (Forex)
+> 全球汇率行情与历史数据
+
+- **行情**: `fx_spot_rates` (即期汇率), `fx_cross_rates` (交叉汇率)
+- **历史**: `fx_history` (历史汇率)
+
+### 🏗️ 期货 (Futures)
+> 商品与金融期货深度数据
+
+- **行情**: `futures_prices` (K线数据)
+- **库存**: `futures_inventory` (交易所库存)
+- **基差**: `futures_basis` (期现基差)
+- **持仓**: `futures_positions` (仓单日报)
+
+### 🏦 基金 (Funds)
+> 公募基金与 ETF 数据
+
+- **基础**: `fund_info` (基本信息), `fund_ranking` (基金排行)
+- **业绩**: `fund_nav` (净值走势)
+- **持仓**: `fund_holdings` (重仓股)
+- **ETF**: `etf_prices` (二级市场行情)
+
+### 🌍 宏观经济 (Macro)
+> 全球与中国宏观经济指标
+
+- **核心**: `macro_gdp` (国内生产总值), `macro_cpi` (消费者物价指数)
+- **景气**: `macro_pmi` (采购经理指数)
+- **金融**: `macro_interest_rate` (基准利率), `macro_money_supply` (货币供应量)
 
 ### 🧠 智能技能 (AI Skills)
 > 让 AI 具备专业分析师的思维

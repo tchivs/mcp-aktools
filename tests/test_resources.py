@@ -139,3 +139,55 @@ def test_precious_metals_analysis_resource():
     assert "伦敦金" in result
     assert "ETF持仓" in result
     assert "COMEX库存" in result
+
+
+def test_stock_dynamic_analysis_different_symbols():
+    """Test stock analysis with different symbols."""
+    template = mcp._resource_manager._templates.get("stock://{symbol}/analysis")
+
+    symbols = ["000001", "600000", "AAPL"]
+    for symbol in symbols:
+        result = template.fn(symbol=symbol)
+        assert symbol in result
+        assert len(result) > 100  # Should have substantial content
+
+
+def test_stock_dynamic_analysis_edge_cases():
+    """Test stock analysis with edge cases."""
+    template = mcp._resource_manager._templates.get("stock://{symbol}/analysis")
+
+    # Empty string
+    result = template.fn(symbol="")
+    assert isinstance(result, str)
+    assert len(result) > 50
+
+    # Special characters
+    result = template.fn(symbol="600519.SH")
+    assert isinstance(result, str)
+    assert "600519.SH" in result
+
+
+def test_sector_flow_guide_different_sectors():
+    """Test sector flow guide with different sectors."""
+    template = mcp._resource_manager._templates.get("market://{sector}/flow")
+
+    sectors = ["电子", "医药", "新能源"]
+    for sector in sectors:
+        result = template.fn(sector=sector)
+        assert sector in result
+        assert len(result) > 100
+
+
+def test_sector_flow_guide_edge_cases():
+    """Test sector flow guide with edge cases."""
+    template = mcp._resource_manager._templates.get("market://{sector}/flow")
+
+    # Empty string
+    result = template.fn(sector="")
+    assert isinstance(result, str)
+    assert len(result) > 50
+
+    # Special characters
+    result = template.fn(sector="半导体/芯片")
+    assert isinstance(result, str)
+    assert "半导体/芯片" in result

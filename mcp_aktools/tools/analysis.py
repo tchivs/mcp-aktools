@@ -85,12 +85,12 @@ def draw_ascii_chart(symbol: str = field_symbol, market: str = field_market):
 
 @mcp.tool(
     title="策略回测",
-    description="基于历史价格与技术指标进行简单策略回测（SMA/RSI/MACD）",
+    description="基于历史价格与技术指标进行简单策略回测（SMA/RSI/MACD/BOLL/MA_CROSS/KDJ）",
 )
 def backtest_strategy(
     symbol: str = field_symbol,
     market: str = field_market,
-    strategy: str = Field("SMA", description="策略类型: SMA/RSI/MACD"),
+    strategy: str = Field("SMA", description="策略类型: SMA/RSI/MACD/BOLL/MA_CROSS/KDJ"),
     days: int = Field(252, description="回测天数"),
 ):
     stock_prices_fn = cast(Callable[..., str], stock_prices)
@@ -143,6 +143,53 @@ def backtest_strategy(
         dea = pd.Series(pd.to_numeric(dfs["DEA"], errors="coerce"), index=dfs.index)
         signal = pd.Series((dif > dea).astype(int), index=dfs.index)
         strategy_desc = "MACD(DIF/DEA)"
+    elif strategy_key == "BOLL":
+        if "BOLL.U" not in dfs.columns or "BOLL.L" not in dfs.columns:
+            return "数据缺少 BOLL 指标，无法回测"
+        boll_u = pd.Series(pd.to_numeric(dfs["BOLL.U"], errors="coerce"), index=dfs.index)
+        boll_l = pd.Series(pd.to_numeric(dfs["BOLL.L"], errors="coerce"), index=dfs.index)
+        positions = []
+        position = 0
+        for i, price in enumerate(dfs["收盘"].to_list()):
+            if pd.isna(boll_u.iloc[i]) or pd.isna(boll_l.iloc[i]):
+                positions.append(position)
+                continue
+            if price <= boll_l.iloc[i]:
+                position = 1
+            elif price >= boll_u.iloc[i]:
+                position = 0
+            positions.append(position)
+        signal = pd.Series(positions, index=dfs.index)
+        strategy_desc = "BOLL(突破下轨买入/上轨卖出)"
+    elif strategy_key in ("MA_CROSS", "MACROSS"):
+        ma10 = dfs["收盘"].rolling(10).mean()
+        ma30 = dfs["收盘"].rolling(30).mean()
+        signal = pd.Series((ma10 > ma30).astype(int), index=dfs.index)
+        strategy_desc = "MA_CROSS(10/30)"
+    elif strategy_key == "KDJ":
+        if "KDJ.K" not in dfs.columns or "KDJ.D" not in dfs.columns:
+            return "数据缺少 KDJ 指标，无法回测"
+        kdj_k = pd.Series(pd.to_numeric(dfs["KDJ.K"], errors="coerce"), index=dfs.index)
+        kdj_d = pd.Series(pd.to_numeric(dfs["KDJ.D"], errors="coerce"), index=dfs.index)
+        positions = []
+        position = 0
+        prev_k, prev_d = None, None
+        for i in range(len(kdj_k)):
+            k_val, d_val = kdj_k.iloc[i], kdj_d.iloc[i]
+            if pd.isna(k_val) or pd.isna(d_val):
+                positions.append(position)
+                prev_k, prev_d = k_val, d_val
+                continue
+            if prev_k is not None and prev_d is not None:
+                if not pd.isna(prev_k) and not pd.isna(prev_d):
+                    if prev_k <= prev_d and k_val > d_val:
+                        position = 1
+                    elif prev_k >= prev_d and k_val < d_val:
+                        position = 0
+            positions.append(position)
+            prev_k, prev_d = k_val, d_val
+        signal = pd.Series(positions, index=dfs.index)
+        strategy_desc = "KDJ(金叉买入/死叉卖出)"
     else:
         return f"不支持的策略类型: {strategy}"
 
@@ -186,3 +233,51 @@ def trading_suggest(
         "score": score,
         "reason": reason,
     }
+
+
+@mcp.tool(
+    title="查看缓存状态",
+    description="查看当前缓存的键和数量，用于调试和监控",
+)
+def cache_status():
+    from ..cache import CacheKey
+
+    keys = list(CacheKey.ALL.keys())
+    if not keys:
+        return "当前缓存为空"
+
+    lines = [
+        "--- 缓存状态 ---",
+        f"缓存条目数: {len(keys)}",
+        "",
+        "最近缓存键 (最多显示20个):",
+    ]
+    for key in keys[:20]:
+        lines.append(f"  - {key}")
+    if len(keys) > 20:
+        lines.append(f"  ... 还有 {len(keys) - 20} 个")
+    return "\n".join(lines)
+
+
+@mcp.tool(
+    title="清理缓存",
+    description="清理指定的缓存键，或清理所有缓存",
+)
+def cache_clear(
+    key: str = Field("", description="要清理的缓存键，留空则清理所有缓存"),
+):
+    from ..cache import CacheKey
+
+    if not key:
+        count = len(CacheKey.ALL)
+        for cache_key in list(CacheKey.ALL.values()):
+            cache_key.delete()
+        CacheKey.ALL.clear()
+        return f"已清理所有缓存 ({count} 个条目)"
+
+    if key in CacheKey.ALL:
+        CacheKey.ALL[key].delete()
+        del CacheKey.ALL[key]
+        return f"已清理缓存: {key}"
+
+    return f"未找到缓存键: {key}"

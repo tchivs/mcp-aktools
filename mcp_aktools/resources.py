@@ -122,3 +122,94 @@ def sector_flow_guide(sector: str) -> str:
 3. 用 northbound_funds 确认外资态度
 4. 综合判断板块强弱
 """
+
+
+@mcp.resource("crypto://{symbol}/analysis")
+def crypto_dynamic_analysis(symbol: str) -> str:
+    """动态生成某个加密货币的专属分析指南"""
+    return f"""
+# {symbol} 加密货币分析指南
+
+## 推荐工具链
+1. `okx_prices(instId="{symbol}-USDT", bar="4H", limit=30)` - 获取K线数据
+2. `okx_loan_ratios(symbol="{symbol}")` - 杠杆多空比
+3. `okx_taker_volume(symbol="{symbol}")` - 主动买卖量
+4. `okx_funding_rate(symbol="{symbol}")` - 资金费率
+5. `okx_open_interest(symbol="{symbol}")` - 合约持仓量
+6. `binance_ai_report(symbol="{symbol}")` - AI研报
+7. `draw_crypto_chart(symbol="{symbol}")` - 可视化走势
+8. `crypto_composite_diagnostic(symbol="{symbol}")` - 综合诊断
+
+## 关键指标关注
+- 多空比 > 1.5 表示多头过热，需警惕回调
+- 多空比 < 0.7 表示空头占优，可能超卖
+- 资金费率 > 0.1% 表示多头拥挤
+- 资金费率 < -0.1% 表示空头占优
+- 持仓量持续增加配合价格上涨为强势信号
+
+## 分析流程
+1. 先用 crypto_composite_diagnostic 获取全面数据
+2. 用 binance_ai_report 获取AI深度分析
+3. 用 fear_greed_index 判断市场情绪
+4. 综合给出操作建议
+"""
+
+
+@mcp.resource("pm://{metal}/analysis")
+def pm_dynamic_analysis(metal: str) -> str:
+    """动态生成贵金属分析指南"""
+    metal_name = "黄金" if metal.lower() in ("gold", "au") else "白银"
+    symbol = "Au99.99" if metal.lower() in ("gold", "au") else "Ag99.99"
+    return f"""
+# {metal_name} 分析指南
+
+## 推荐工具链
+1. `pm_spot_prices(symbol="{symbol}", limit=30)` - 国内现货价格
+2. `pm_international_prices(symbol="XAU")` - 国际价格
+3. `pm_etf_holdings(metal="{metal}")` - ETF持仓变化
+4. `pm_comex_inventory(metal="{metal_name}")` - COMEX库存
+5. `pm_basis(metal="{metal_name}")` - 期现基差
+6. `pm_benchmark_price(metal="{metal}")` - 基准价格
+7. `pm_composite_diagnostic(metal="{metal}")` - 综合诊断
+
+## 关键指标关注
+- ETF持仓连续增加 → 机构看多
+- ETF持仓连续减少 → 机构看空
+- COMEX库存下降 → 实物需求强劲
+- 正基差(期货>现货) → 市场预期上涨
+- 负基差(期货<现货) → 现货紧缺
+
+## 分析流程
+1. 先用 pm_composite_diagnostic 获取全面数据
+2. 关注内外盘价差判断套利空间
+3. 结合ETF持仓和库存判断资金流向
+4. 综合给出操作建议
+"""
+
+
+@mcp.resource("fund://{code}/analysis")
+def fund_dynamic_analysis(code: str) -> str:
+    """动态生成基金分析指南"""
+    return f"""
+# 基金 {code} 分析指南
+
+## 推荐工具链
+1. `fund_info(code="{code}")` - 基金基本信息
+2. `fund_nav(code="{code}", limit=30)` - 净值走势
+3. `fund_holdings(code="{code}")` - 重仓股明细
+4. `fund_ranking(type="全部")` - 同类排名
+
+## 关键指标关注
+- 近1年收益率与同类排名
+- 最大回撤与波动率
+- 基金规模变化(规模过大可能影响操作灵活性)
+- 基金经理任职年限和历史业绩
+- 重仓股集中度
+
+## 分析流程
+1. 先用 fund_info 了解基金基本情况
+2. 用 fund_nav 分析历史业绩表现
+3. 用 fund_holdings 查看持仓风格
+4. 用 fund_ranking 对比同类基金
+5. 综合给出投资建议
+"""

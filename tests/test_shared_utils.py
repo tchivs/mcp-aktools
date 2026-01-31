@@ -32,13 +32,16 @@ class TestAkCache:
             call_count[0] += 1
             return pd.DataFrame({"col": [1, 2, 3]})
 
-        # Clear cache first
+        unique_key = f"test_ak_cache_uses_key_{id(self)}_{call_count}"
         CacheKey.ALL = {}
 
-        result = ak_cache(mock_fun, "arg1", key="custom_key_uses_key", ttl=60)
+        result = ak_cache(mock_fun, "arg1", key=unique_key, ttl=60)
 
         assert result is not None
-        assert call_count[0] == 1  # Function was called once
+        assert call_count[0] == 1
+
+        if unique_key in CacheKey.ALL:
+            CacheKey.ALL[unique_key].delete()
 
     def test_ak_cache_generates_key_from_args(self):
         """Test that ak_cache generates key from function args."""

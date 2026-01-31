@@ -1,5 +1,7 @@
-from pydantic import Field
 from datetime import datetime
+
+from pydantic import Field
+
 from ..server import mcp
 from ..shared.fields import field_market
 from ..shared.utils import load_portfolio, save_portfolio
@@ -49,3 +51,45 @@ def portfolio_view():
         except Exception:
             results.append(f"{k}: 成本 {v['price']:.2f} (无法获取实时现价)")
     return "\n".join(results)
+
+
+@mcp.tool(
+    title="持仓盈亏图表",
+    description="生成持仓盈亏的 ASCII 柱状图，直观展示各持仓盈亏情况",
+)
+def portfolio_chart():
+    p = load_portfolio()
+    if not p:
+        return "当前模拟盘为空，无法生成图表"
+
+    holdings = []
+    for k, v in p.items():
+        try:
+            prices = stock_prices(v["symbol"], v["market"], limit=1)
+            current_price = float(prices.split("\n")[-1].split(",")[2])
+            ratio = (current_price / v["price"] - 1) * 100
+            holdings.append({"name": k, "ratio": ratio})
+        except Exception:
+            holdings.append({"name": k, "ratio": 0.0})
+
+    if not holdings:
+        return "无有效持仓数据"
+
+    max_ratio = max(abs(h["ratio"]) for h in holdings) or 1
+    bar_width = 20
+
+    lines = ["--- 持仓盈亏图表 ---", ""]
+    for h in holdings:
+        ratio = h["ratio"]
+        bar_len = int(abs(ratio) / max_ratio * bar_width)
+        if ratio >= 0:
+            bar = "█" * bar_len
+            line = f"{h['name']:>15} | {bar:<{bar_width}} | +{ratio:.2f}%"
+        else:
+            bar = "█" * bar_len
+            line = f"{h['name']:>15} | {' ' * (bar_width - bar_len)}{bar} | {ratio:.2f}%"
+        lines.append(line)
+
+    lines.append("")
+    lines.append(f"最大波动: ±{max_ratio:.2f}%")
+    return "\n".join(lines)

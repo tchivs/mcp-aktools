@@ -1,4 +1,5 @@
 import importlib.metadata
+
 from fastmcp import FastMCP
 
 try:
@@ -37,7 +38,32 @@ INSTRUCTIONS = """
 - **宏观/筹码面?** → `pm_etf_holdings` (ETF持仓), `pm_comex_inventory` (库存)。
 - **套利/预期?** → `pm_basis` (期现基差), `pm_benchmark_price` (基准价)。
 
-### 4. 市场大盘与热点 (Market Pulse)
+### 4. 外汇分析 (Forex)
+- **实时汇率?** → `fx_spot_rates` (主要货币对如 USDCNY, EURUSD)。
+- **历史走势?** → `fx_history` (汇率历史数据)。
+- **交叉汇率?** → `fx_cross_rates` (多货币交叉汇率矩阵)。
+
+### 5. 期货分析 (Futures)
+- **期货价格?** → `futures_prices` (商品期货K线数据)。
+- **库存数据?** → `futures_inventory` (交易所库存)。
+- **期现基差?** → `futures_basis` (期货与现货价差)。
+- **持仓排名?** → `futures_positions` (仓单日报)。
+
+### 6. 基金分析 (Funds)
+- **基金信息?** → `fund_info` (基本信息、规模、管理人)。
+- **净值走势?** → `fund_nav` (历史净值数据)。
+- **重仓股?** → `fund_holdings` (基金持仓明细)。
+- **基金排行?** → `fund_ranking` (按类型筛选排行榜)。
+- **ETF行情?** → `etf_prices` (二级市场价格)。
+
+### 7. 宏观经济 (Macro)
+- **经济增长?** → `macro_gdp` (国内生产总值)。
+- **通胀数据?** → `macro_cpi` (消费者物价指数)。
+- **景气指数?** → `macro_pmi` (采购经理指数)。
+- **利率数据?** → `macro_interest_rate` (基准利率)。
+- **货币供应?** → `macro_money_supply` (M0/M1/M2)。
+
+### 8. 市场大盘与热点 (Market Pulse)
 - **分析前奏?** → `get_current_time` (确认当前时间及最近交易日)。
 - **捕捉热点?** → `stock_zt_pool_em` (涨停池), `market_anomaly_scan` (异动扫描如"火箭发射")。
 - **资金流向?** → `stock_sector_fund_flow_rank` (板块资金), `northbound_funds` (北向资金)。
@@ -57,6 +83,8 @@ INSTRUCTIONS = """
   - 港股: 5位数字 (如 `00700`)。
   - 美股: 字母代码 (如 `AAPL`)。
   - 加密货币: 字母代码 (如 `BTC`)，OKX 相关工具内部会自动处理为 `BTC-USDT`。
+  - 基金: 6位数字 (如 `000001`)。
+  - 外汇: 货币对代码 (如 `USDCNY`, `EURUSD`)。
 - **性能优化**: `search` 工具涉及模糊匹配，响应较慢。如果已知代码，请跳过搜索步骤直接调用相关数据工具。
 - **时效性**:
   - A股数据在交易时间 (9:30-15:00) 实时更新。

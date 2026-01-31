@@ -1,7 +1,1 @@
-from . import analysis
-from . import crypto
-from . import funds
-from . import market
-from . import portfolio
-from . import precious_metals
-from . import stocks
+from . import analysis, crypto, forex, funds, futures, macro, market, portfolio, precious_metals, stocks

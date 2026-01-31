@@ -1,15 +1,14 @@
 import argparse
 import json
 import os
-from .server import mcp
-
-# 触发装饰器注册
-from . import resources
-from . import prompts
-from .tools import stocks, crypto, market, portfolio, analysis
 
 # 导入 main 需要用到的中间件
 from starlette.middleware.cors import CORSMiddleware
+
+# 触发装饰器注册
+from . import prompts, resources
+from .server import mcp
+from .tools import analysis, crypto, forex, market, portfolio, precious_metals, stocks
 
 
 def _run_inspect():

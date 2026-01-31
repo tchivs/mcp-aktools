@@ -1,5 +1,6 @@
-import sys
 import pathlib
+import sys
+
 import diskcache
 from cachetools import TTLCache
 

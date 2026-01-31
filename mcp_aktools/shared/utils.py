@@ -1,9 +1,11 @@
-import os
 import json
 import logging
+import os
+from datetime import datetime
+
 import akshare as ak
 import pandas as pd
-from datetime import datetime
+
 from ..cache import CacheKey
 from .constants import PORTFOLIO_FILE
 
@@ -54,7 +56,7 @@ def save_portfolio(data):
         json.dump(data, f, indent=2)
 
 
-def ak_search(symbol=None, keyword=None, market=None):
+def ak_search(symbol: str | None = None, keyword: str | None = None, market: str | None = None):
     markets = [
         ["sh", ak.stock_info_a_code_name, "code", "name"],
         ["sh", ak.stock_info_sh_name_code, "证券代码", "证券简称"],
@@ -82,10 +84,11 @@ def ak_search(symbol=None, keyword=None, market=None):
                 return v
             if keyword and keyword.upper() in [code, name]:
                 return v
-        for _, v in all_df.iterrows() if keyword else []:
-            name = str(v[m[3]])
-            if len(keyword) >= 4 and keyword in name:
-                return v
-            if name.startswith(keyword):
-                return v
+        if keyword:
+            for _, v in all_df.iterrows():
+                name = str(v[m[3]])
+                if len(keyword) >= 4 and keyword in name:
+                    return v
+                if name.startswith(keyword):
+                    return v
     return None
