@@ -228,7 +228,7 @@ class TestDrawCryptoChart:
             [f"2024-01-{i + 1:02d},42000,42500,43000,41500" for i in range(20)]
         )
 
-        with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=mock_prices):
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
             result = draw_crypto_chart_fn(symbol="BTC", bar="1D")
 
             assert isinstance(result, str)
@@ -238,7 +238,7 @@ class TestDrawCryptoChart:
 
     def test_handles_insufficient_data(self):
         """Test handling of insufficient data."""
-        with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=""):
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=""):
             result = draw_crypto_chart_fn(symbol="BTC", bar="1D")
 
             assert isinstance(result, str)
@@ -254,13 +254,86 @@ class TestBacktestCryptoStrategy:
             [f"2024-01-{i + 1:02d},42000,{42000 + i * 100},43000,41500" for i in range(30)]
         )
 
-        with mock.patch("mcp_aktools.tools.crypto.okx_prices", return_value=mock_prices):
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
             result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
 
             assert isinstance(result, str)
             assert "策略回测" in result
             assert "累计收益" in result
             assert "最大回撤" in result
+
+    def test_returns_not_found_when_okx_prices_not_string(self):
+        """Test backtest when okx_prices returns non-string."""
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=pd.DataFrame()):
+            result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "未找到" in result
+
+    def test_parse_failure(self):
+        """Test backtest when price data cannot be parsed."""
+        bad_csv = '时间,收盘\n"unterminated'
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=bad_csv):
+            result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "解析失败" in result
+
+    def test_empty_dataframe_after_parsing(self):
+        """Test backtest when parsed data is empty."""
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value="时间,开盘,收盘,最高,最低\n"):
+            result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "数据不足" in result
+
+    def test_missing_close_column(self):
+        """Test backtest when '收盘' column is missing."""
+        mock_prices = "时间,开盘,最高,最低\n2024-01-01,42000,43000,41500"
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
+            result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "数据不足" in result
+
+    def test_rsi_strategy_missing_rsi_column(self):
+        """Test RSI strategy when RSI column is missing."""
+        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join(
+            [f"2024-01-{i + 1:02d},42000,{42000 + i * 10},43000,41500" for i in range(30)]
+        )
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
+            result = backtest_crypto_fn(symbol="BTC", strategy="RSI", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "缺少 RSI" in result
+
+    def test_macd_strategy_missing_columns(self):
+        """Test MACD strategy when DIF/DEA columns are missing."""
+        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join(
+            [f"2024-01-{i + 1:02d},42000,{42000 + i * 10},43000,41500" for i in range(30)]
+        )
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
+            result = backtest_crypto_fn(symbol="BTC", strategy="MACD", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "缺少 MACD" in result
+
+    def test_invalid_strategy(self):
+        """Test backtest with invalid strategy."""
+        mock_prices = "时间,开盘,收盘,最高,最低\n" + "\n".join(
+            [f"2024-01-{i + 1:02d},42000,{42000 + i * 10},43000,41500" for i in range(30)]
+        )
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=mock_prices):
+            result = backtest_crypto_fn(symbol="BTC", strategy="INVALID", bar="4H", limit=30)
+
+            assert isinstance(result, str)
+            assert "不支持" in result
+
+    def test_returns_not_found_when_no_data(self):
+        """Test backtest returns not-found when okx_prices is empty."""
+        with mock.patch.object(crypto_module.okx_prices, "fn", return_value=""):
+            result = backtest_crypto_fn(symbol="BTC", strategy="SMA", bar="4H", limit=30)
+            assert "未找到" in result
 
 
 class TestOkxFundingRate:
@@ -305,6 +378,17 @@ class TestOkxFundingRate:
             assert isinstance(result, str)
             assert "BTC" in result
 
+    def test_handles_no_items(self):
+        """Test funding rate when API returns no items."""
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": []}
+
+        with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
+            result = okx_funding_fn(symbol="BTC")
+
+            assert isinstance(result, str)
+            assert "未找到" in result
+
 
 class TestOkxOpenInterest:
     """Test the okx_open_interest tool."""
@@ -327,6 +411,26 @@ class TestOkxOpenInterest:
 
             assert isinstance(result, str)
             assert "持仓量" in result
+
+    def test_handles_no_items(self):
+        """Test open interest when API returns no items."""
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": []}
+
+        with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
+            result = okx_oi_fn(symbol="BTC")
+
+            assert isinstance(result, str)
+            assert "未找到" in result
+
+    def test_returns_not_found_when_empty(self):
+        """Test open interest handles empty data."""
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": []}
+
+        with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
+            result = okx_oi_fn(symbol="BTC")
+            assert "未找到" in result
 
 
 class TestFearGreedIndex:
@@ -352,6 +456,26 @@ class TestFearGreedIndex:
             assert isinstance(result, str)
             assert "恐惧贪婪指数" in result
             assert "75" in result or "Greed" in result
+
+    def test_handles_no_items(self):
+        """Test fear_greed_index when API returns no items."""
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": []}
+
+        with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
+            result = fgi_fn()
+
+            assert isinstance(result, str)
+            assert "未能获取" in result
+
+    def test_handles_empty_response(self):
+        """Test fear_greed_index handles empty response."""
+        mock_response = mock.Mock()
+        mock_response.json.return_value = {"data": []}
+
+        with mock.patch("mcp_aktools.tools.crypto.requests.get", return_value=mock_response):
+            result = fgi_fn()
+            assert "未能获取" in result
 
 
 if __name__ == "__main__":
