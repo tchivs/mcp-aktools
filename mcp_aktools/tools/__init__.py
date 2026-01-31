@@ -1,5 +1,6 @@
 from . import analysis
 from . import crypto
+from . import funds
 from . import market
 from . import portfolio
 from . import precious_metals
