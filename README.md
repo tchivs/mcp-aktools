@@ -190,7 +190,7 @@ AkTools Pro 提供了 65 个专业工具，分为以下核心模块：
 ## 📋 完整工具列表
 
 <details>
-<summary><strong>点击展开 61 个工具的完整列表</strong></summary>
+<summary><strong>点击展开 65 个工具的完整列表</strong></summary>
 
 ### 📈 股票 & 市场
 
