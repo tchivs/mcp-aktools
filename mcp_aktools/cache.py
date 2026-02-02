@@ -1,17 +1,24 @@
-import pathlib
-import pathlib
-import sys
+from __future__ import annotations
 
 import atexit
+import pathlib
+import sys
+from typing import Any, ClassVar, Dict
 
 import diskcache
 from cachetools import TTLCache
 
 
 class CacheKey:
-    ALL: dict = {}
+    ALL: ClassVar[Dict[str, "CacheKey"]] = {}
 
-    def __init__(self, key, ttl=600, ttl2=None, maxsize=100):
+    key: str
+    ttl: int
+    ttl2: int
+    cache1: TTLCache[str, Any]
+    cache2: diskcache.Cache
+
+    def __init__(self, key: str, ttl: int = 600, ttl2: int | None = None, maxsize: int = 100) -> None:
         self.key = key
         self.ttl = ttl
         self.ttl2 = ttl2 or (ttl * 2)
@@ -19,25 +26,25 @@ class CacheKey:
         self.cache2 = diskcache.Cache(self.get_cache_dir())
 
     @staticmethod
-    def init(key, ttl=600, ttl2=None, maxsize=100):
+    def init(key: str, ttl: int = 600, ttl2: int | None = None, maxsize: int = 100) -> "CacheKey":
         if key in CacheKey.ALL:
             return CacheKey.ALL[key]
         cache = CacheKey(key, ttl, ttl2, maxsize)
         return CacheKey.ALL.setdefault(key, cache)
 
-    def get(self):
+    def get(self) -> Any:
         try:
             return self.cache1[self.key]
         except KeyError:
             pass
         return self.cache2.get(self.key)
 
-    def set(self, val):
+    def set(self, val: Any) -> Any:
         self.cache1[self.key] = val
         self.cache2.set(self.key, val, expire=self.ttl2)
         return val
 
-    def delete(self):
+    def delete(self) -> None:
         self.cache1.pop(self.key, None)
         self.cache2.delete(self.key)
 
@@ -63,7 +70,7 @@ class CacheKey:
                 except Exception:
                     pass
 
-    def get_cache_dir(self):
+    def get_cache_dir(self) -> pathlib.Path:
         home = pathlib.Path.home()
         name = __package__ or "mcp_aktools"
         if sys.platform == "win32":
